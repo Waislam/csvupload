@@ -1,7 +1,7 @@
 from app import app
 from flask import render_template, request, send_file
 import os
-from vsf2.vsf3 import Appointment
+from vsf.vsf3 import Appointment
 
 app.config['UPLOAD_FOLDER'] = 'app/static/csv'
 

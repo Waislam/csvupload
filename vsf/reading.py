@@ -1,6 +1,9 @@
 import csv
+import os
 
 inputfile = 'input.csv'
+
+filepath = os.path.join('app/static/csv/input.csv')
 
 class ReadWrite:
     data_list = []
@@ -10,7 +13,7 @@ class ReadWrite:
     def read_data(self):
         """ Read data csv file """
 
-        with open(inputfile, 'r') as csvfile:
+        with open(filepath) as csvfile:
             thereader = csv.DictReader(csvfile)
             # thereader = csv.reader(csvfile)
             # next(thereader, None)  # skip header
