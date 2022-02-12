@@ -7,14 +7,14 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from proxylist import get_free_proxy # list of freeproxy
+#from proxylist import get_free_proxy # list of freeproxy
 
 #for dropdown selection
 from selenium.webdriver.support.ui import Select
 
 # for email otp
-from otp import GmailOtp
-from otp_outlook import Realotp
+#from otp import GmailOtp
+from .otp_outlook import Realotp
 
 import time
 # for recaptcha solution
@@ -22,15 +22,15 @@ import time
 # import os
 import requests
 
-from capsolution import CapSolution
+from .capsolution import CapSolution
 
 
 # for file reading and writing
 # import pandas
 # import csv
 # inputfile = 'vsfinput.csv' # all these things goes to external file
-from reading import ReadWrite #to read inputed file
-from output import write_result
+from .reading import ReadWrite #to read inputed file
+from .output import write_result
 
 
 

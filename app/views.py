@@ -12,6 +12,7 @@ def index():
         print(csvfile)
         if csvfile.filename != '':
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], csvfile.filename)
+            print("file path: ", filepath)
             csvfile.save(filepath)
     return render_template("index.html")
 
