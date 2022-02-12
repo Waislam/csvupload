@@ -2,7 +2,7 @@ from app import app
 from flask import render_template, request
 import os
 
-app.config['UPLOAD_FOLDER'] = 'static/csv'
+app.config['UPLOAD_FOLDER'] = 'app/static/csv'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
