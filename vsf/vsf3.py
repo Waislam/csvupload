@@ -50,8 +50,8 @@ class Appointment():
     options = Options()
     # ua = UserAgent()
     # userAgent = ua.random
-    userAgent = 'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'
-    options.add_argument(f'user-agent={userAgent}')
+    # userAgent = 'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'
+    # options.add_argument(f'user-agent={userAgent}')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
 
