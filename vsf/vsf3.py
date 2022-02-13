@@ -411,13 +411,13 @@ class Appointment():
         try:
             self.wait60sec(driver)
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
-            driver.add_cookie({"name": "python", "domain": "row1.vfsglobal.com", "value": "python"})
+            # driver.add_cookie({"name": "python", "domain": "row1.vfsglobal.com", "value": "python"})
             driver.get_cookies()
             self.login(user_name, pass_word, driver)
         except:
             self.wait60sec(driver)
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
-            driver.add_cookie({"name": "python", "domain": "row1.vfsglobal.com", "value": "python"})
+            # driver.add_cookie({"name": "python", "domain": "row1.vfsglobal.com", "value": "python"})
             driver.get_cookies()
             self.login(user_name, pass_word, driver)
         self.wait60sec(driver)
