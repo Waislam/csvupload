@@ -47,11 +47,13 @@ class Appointment():
     #     "proxyType": "MANUAL",
     #
     # }
-    # options = Options()
-    # # ua = UserAgent()
-    # # userAgent = ua.random
-    # userAgent = 'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'
-    # options.add_argument(f'user-agent={userAgent}')
+    options = Options()
+    # ua = UserAgent()
+    # userAgent = ua.random
+    userAgent = 'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'
+    options.add_argument(f'user-agent={userAgent}')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
 
     service_obj = Service(ChromeDriverManager().install())
     # driver = None
@@ -381,7 +383,7 @@ class Appointment():
                                       countrycode,
                                       mobile,
                                       email, passw):
-        driver = webdriver.Chrome(service=self.service_obj)
+        driver = webdriver.Chrome(service=self.service_obj, options=self.options)
         # for line in self.user_list:
         #     user_name = line['User Name'].strip()
         #     pass_word = line['Password'].strip()

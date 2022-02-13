@@ -1,7 +1,7 @@
 import csv
 import os
 
-output_file = 'result.csv'
+output_file = os.path.join('app/static/output/result.csv')
 
 def write_result(data):
     """Write new scrapped data to final result file"""
