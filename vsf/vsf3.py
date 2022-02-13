@@ -333,7 +333,9 @@ class Appointment():
 
     def login(self, user_name, pass_word, driver):
         '''This method is suppose to solve login and login captcha problem'''
+        driver.implicitly_wait(5)
         email = driver.find_element(By.XPATH, "//input[@id='EmailId']")
+        print(user_name)
         # email.send_keys('waislam67@gmail.com')
         email.send_keys(user_name)
         password = driver.find_element(By.XPATH, "//input[@id='Password']")

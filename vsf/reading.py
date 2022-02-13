@@ -1,7 +1,7 @@
 import csv
 import os
 
-inputfile = 'input.csv'
+# inputfile = 'input.csv'
 
 filepath = os.path.join('app/static/csv/input.csv')
 
