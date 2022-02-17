@@ -32,6 +32,9 @@ from .capsolution import CapSolution
 from .reading import ReadWrite #to read inputed file
 from .output import write_result
 
+# for solution of hcaptcha
+from .hcapsol import HcapSolution
+
 
 
 class Appointment():
@@ -89,6 +92,18 @@ class Appointment():
         print('in first f '+ otp_int)
         return otp_int
 
+    def hcapsolution(self, driver):
+        # capsol = HcapSolution()
+        # capsol.runhcap(driver)
+        self.delay()
+        driver.implicitly_wait(2)
+        iframe = driver.find_element(By.XPATH, "//div[@id='cf-hcaptcha-container']/div/following-sibling::div/iframe[@title='widget containing checkbox for hCaptcha security challenge']")
+        driver.switch_to.frame(iframe)
+        self.delay()
+        time.sleep(2)
+        check_box = driver.find_element(By.XPATH, "//div[@id='checkbox']")
+        check_box.click() # clicked on the check box of hcaptcha
+        time.sleep(60)
 
 
 
@@ -107,13 +122,16 @@ class Appointment():
 
         #click on continue button
         driver.implicitly_wait(10)
-        driver.find_element(By.XPATH, "//input[@id='btnContinue']").click()
+        driver.find_element(By.XPATH, "//input[@id='btnContinue']").click() #this is the continue button in the first page
         self.delay()
         #next page loading
         # now click on Add Customer button
         self.wait60sec(driver)
-        driver.find_element(By.XPATH, "//a[@class='submitbtn']").click()
+        driver.find_element(By.XPATH, "//a[@class='submitbtn']").click() #this is the the add customer button
         driver.implicitly_wait(3)
+
+        # now it is time to solve hcaptcha
+        self.hcapsolution(driver)
 
     def addcustomer(self, passport,
                      # confirmpassport,
@@ -333,7 +351,7 @@ class Appointment():
 
     def login(self, user_name, pass_word, driver):
         '''This method is suppose to solve login and login captcha problem'''
-        driver.implicitly_wait(5)
+        driver.implicitly_wait(2)
         email = driver.find_element(By.XPATH, "//input[@id='EmailId']")
         print(user_name)
         # email.send_keys('waislam67@gmail.com')
@@ -364,6 +382,7 @@ class Appointment():
 
 
     def make_schedule(self, centre, appointment_category, driver):
+        '''this method is the parent of primary selection'''
         driver.find_element(By.XPATH, "//ul[@class='leftNav-ul']/descendant::li[1]/a").click()
         driver.implicitly_wait(2)
         time.sleep(3)
@@ -385,7 +404,7 @@ class Appointment():
                                       countrycode,
                                       mobile,
                                       email, passw):
-        driver = webdriver.Chrome(service=self.service_obj, options=self.options)
+        driver = webdriver.Chrome(self.service_obj.path, options=self.options)
         # for line in self.user_list:
         #     user_name = line['User Name'].strip()
         #     pass_word = line['Password'].strip()
@@ -413,14 +432,14 @@ class Appointment():
         try:
             self.wait60sec(driver)
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
-            # driver.add_cookie({"name": "python", "domain": "row1.vfsglobal.com", "value": "python"})
-            driver.get_cookies()
+            # driver.add_cookie({"ASP.NET_SessionId": "41pyiclvcsdz40dvsi4s5pmr", "_culture": "en-US", "_Role": "Individual", })
+            # driver.get_cookies()
             self.login(user_name, pass_word, driver)
         except:
             self.wait60sec(driver)
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
             # driver.add_cookie({"name": "python", "domain": "row1.vfsglobal.com", "value": "python"})
-            driver.get_cookies()
+            # driver.get_cookies()
             self.login(user_name, pass_word, driver)
         self.wait60sec(driver)
         self.make_schedule(centre, appointment_category, driver)
