@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import Select
 
 # for email otp
 #from otp import GmailOtp
-from .otp_outlook import Realotp
+#from .otp_outlook import Realotp
 
 import time
 # for recaptcha solution
@@ -85,18 +85,17 @@ class Appointment():
         capsul = CapSolution()
         capsul.capthasolution(driver)
 
-    def gmail_otp(self, email, passw):
-        '''this method supposed to fetch otp from gmail'''
-        otp = Realotp()
-        otp_int = otp.outlook_otp(email, passw)
-        print('in first f '+ otp_int)
-        return otp_int
+    # def gmail_otp(self, email, passw):
+    #     '''this method supposed to fetch otp from gmail'''
+    #     otp = Realotp()
+    #     otp_int = otp.outlook_otp(email, passw)
+    #     print('in first f '+ otp_int)
+    #     return otp_int
 
 
     def click_on_image(self, driver, header_text):
         ''' this method supposed  to click on hcaptcha images'''
         wrapper_list = driver.find_elements(By.XPATH, "//div[@class='task-image']")
-        print(wrapper_list)
 
         for wrapper in wrapper_list:
             img_url = wrapper.find_element(By.XPATH, ".//div[@class='image-wrapper']/div[@class='image']")  # .value_of_css_property('background'))
@@ -200,6 +199,7 @@ class Appointment():
                 break;
 
         driver.switch_to.default_content()
+        # after this step go to add customer form fill
 
 
     def addcustomer(self, passport,
@@ -212,12 +212,12 @@ class Appointment():
                      gender,
                      countrycode,
                      mobile,
-                     email, passw, driver):
+                     email, driver):
                      # housenumber,
                      # streetAddress1,
                      # streetAddress2,
                      # postalcode):
-        '''this method working to add all information in the page of add customer'''
+        '''this method working to add all information in the page of add customer and will click to continue button'''
         self.reference_number = ''
         driver.implicitly_wait(10)
         self.delay()
@@ -254,13 +254,6 @@ class Appointment():
         email_field.send_keys(email)
 
 
-        #below things are for without otp part
-        #qurier address filling
-        # self.driver.find_element(By.XPATH, "//input[@id='HouseNumber']").send_keys(housenumber)
-        # self.driver.find_element(By.XPATH, "//input[@id='StreetAddress1']").send_keys(streetAddress1)
-        # self.driver.find_element(By.XPATH, "//input[@id='StreetAddress2']").send_keys(streetAddress2)
-        # self.driver.find_element(By.XPATH, "//input[@id='PostalCode']").send_keys(postalcode)
-
         #click on submit button
         self.delay()
         driver.find_element(By.XPATH, "//input[@id='submitbuttonId']").click()
@@ -273,44 +266,51 @@ class Appointment():
 
         #from here it will goes to OTP .. now take reference numbar and click on sent OTP button
 
+        # february 2022... at the beginning otp option has gone so below code should dow something else
+
         driver.switch_to.default_content()
         driver.implicitly_wait(10)
         self.delay()
         # reference number
         self.reference_number += driver.find_element(By.XPATH, "//div[@class='mandatory-txt']/label/b").text.strip()
         print(self.reference_number)
-        driver.find_element(By.XPATH, "//input[@type='submit']").click() #sent otp button click
 
-        # now time to get otp from email via otp module
-        print('Waiting for OTP')
-        time.sleep(60)
-        self.wait60sec(driver)
-        try:
-            otp = self.gmail_otp(email, passw)
-            if otp == False:
-                print('Trying to resent otp')
-                time.sleep(3)
-                driver.find_element(By.XPATH, "//input[@value='Regenerate OTP']").click()  # click to resent button
-                otp = self.gmail_otp(email, passw)
-                return otp
-            else:
-                print('before apply '+ otp)
-                return otp
-        except:
-            print('Customer just added')
-            return False
+        # submit button to click to move forward
+        driver.find_element(By.XPATH, "//input[@type='submit']").click()
+
+
+        # driver.find_element(By.XPATH, "//input[@type='submit']").click() #sent otp button click
+        #
+        # # now time to get otp from email via otp module
+        # print('Waiting for OTP')
+        # time.sleep(60)
+        # self.wait60sec(driver)
+        # try:
+        #     otp = self.gmail_otp(email, passw)
+        #     if otp == False:
+        #         print('Trying to resent otp')
+        #         time.sleep(3)
+        #         driver.find_element(By.XPATH, "//input[@value='Regenerate OTP']").click()  # click to resent button
+        #         otp = self.gmail_otp(email, passw)
+        #         return otp
+        #     else:
+        #         print('before apply '+ otp)
+        #         return otp
+        # except:
+        #     print('Customer just added')
+        #     return False
             # NOte: I have move to other row of excel if otp verification is not done( from next row to sent otp first time)
 
 
 
 
-    def email_otp_submission(self, otp, driver):
-        '''this method will submit the email otp'''
-        otp_input = driver.find_element(By.XPATH, "//input[@id='OTPe']")
-        otp_input.send_keys(otp)  # otp input is done here
-        # now submit
-        time.sleep(10)
-        driver.find_element(By.XPATH, "//input[@value='Verify OTP and Continue']").click()
+    # def email_otp_submission(self, otp, driver):
+    #     '''this method will submit the email otp'''
+    #     otp_input = driver.find_element(By.XPATH, "//input[@id='OTPe']")
+    #     otp_input.send_keys(otp)  # otp input is done here
+    #     # now submit
+    #     time.sleep(10)
+    #     driver.find_element(By.XPATH, "//input[@value='Verify OTP and Continue']").click()
 
 
     def pick_date(self, driver):
@@ -326,7 +326,7 @@ class Appointment():
         # go further
         driver.implicitly_wait(5)
         month = driver.find_element(By.XPATH, "//input[@id='EarliestAllotedMonth']")
-        driver.execute_script("arguments[0].setAttribute('value', '2')", month)
+        driver.execute_script("arguments[0].setAttribute('value', '6')", month)
         time.sleep(1)
         driver.refresh()
         driver.implicitly_wait(5)
@@ -340,24 +340,28 @@ class Appointment():
                         # valo kore observe korte hobe kon page bar bar reload hosse
                         available_date_list = driver.find_element(By.XPATH, "//td[@style='background-color: rgb(188, 237, 145); cursor: pointer;']")[0]
                         available_date_list.click()
+                        day_number = available_date_list.find_element(By.XPATH, "/div/div[@class='fc-day-number']").text.strip()
                         break;
                     except:
                         # it will click on the next month page and will try
                         # click on next button add the action below/ didn't add yet
                         next_month = driver.find_element(By.XPATH, "//input[@id='EarliestAllotedMonth']")
-                        driver.execute_script("arguments[0].setAttribute('value', '3')", next_month)
+                        driver.execute_script("arguments[0].setAttribute('value', '7')", next_month)
                         driver.refresh()
                         available_date_list = driver.find_elements(By.XPATH,"//td[@style='background-color: rgb(188, 237, 145); cursor: pointer;']")[0]
                         available_date_list.click()
+                        day_number = available_date_list.find_element(By.XPATH, "/div/div[@class='fc-day-number']").text.strip()
                         break;
                 except:
                     time.sleep(60)
                     driver.refresh()
         except:
-            available_date_list = 'Null'
-            self.picked_date += available_date_list
+            day_number = 'Null'
+            self.picked_date += day_number
             return self.picked_date
-        self.picked_date += available_date_list
+
+
+        self.picked_date += day_number
         #//td[@style='background-color: rgb(188, 237, 145); cursor: pointer;']/div/div[@class='fc-day-number']
 
         # click on time schedule
@@ -452,7 +456,7 @@ class Appointment():
 
     def make_schedule(self, centre, appointment_category, driver):
         '''this method is the parent of primary selection'''
-        driver.find_element(By.XPATH, "//ul[@class='leftNav-ul']/descendant::li[1]/a").click()
+        driver.find_element(By.XPATH, "//ul[@class='leftNav-ul']/descendant::li[1]/a").click() #schedule an appointment
         driver.implicitly_wait(2)
         time.sleep(3)
         self.primary_selection(centre, appointment_category, driver)
@@ -472,30 +476,9 @@ class Appointment():
                                       gender,
                                       countrycode,
                                       mobile,
-                                      email, passw):
+                                      email):
+        '''this method initiated and quite the driver'''
         driver = webdriver.Chrome(self.service_obj.path, options=self.options)
-        # for line in self.user_list:
-        #     user_name = line['User Name'].strip()
-        #     pass_word = line['Password'].strip()
-        #     centre = line['Centre'].strip()
-        #     appointment_category = line['Appointment Category'].strip()
-        #     passport = line['passport'].strip()
-        #     # confirmpassport = line['passport'].strip()  # there is no confirm passport option regarding otp
-        #     birthdate = line['birthdate'].strip()
-        #     passportexpiration = line['passportexpiration'].strip()
-        #     nationality = line['nationality'].strip()
-        #     firstname = line['firstname'].upper().strip()
-        #     lastname = line['lastname'].upper().strip()
-        #     gender = line['gender'].strip()
-        #     countrycode = line['countrycode'].strip()
-        #     mobile = line['mobile'].strip()
-        #     email = line['email'].strip()
-
-            # before this an OTP will be sent. and below things for without OtP
-            # housenumber = line['housenumber'].strip()
-            # streetAddress1 = line['streetAddress1'].strip()
-            # streetAddress2 = line['streetAddress2'].strip()
-            # postalcode = line['postalcode'].strip()
 
             # self.driver.get('https://row1.vfsglobal.com/GlobalAppointment/Home/Index')
         try:
@@ -507,14 +490,14 @@ class Appointment():
         except:
             self.wait60sec(driver)
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
-            # driver.add_cookie({"name": "python", "domain": "row1.vfsglobal.com", "value": "python"})
-            # driver.get_cookies()
             self.login(user_name, pass_word, driver)
+
         self.wait60sec(driver)
         self.make_schedule(centre, appointment_category, driver)
 
         self.wait60sec(driver)
-        mail_otp = self.addcustomer(passport,
+        # addcustomer method here added to the mail_otp variable if it is in term of otp case
+        self.addcustomer(passport,
                          # confirmpassport,
                          birthdate,
                          passportexpiration,
@@ -524,26 +507,25 @@ class Appointment():
                          gender,
                          countrycode,
                          mobile,
-                         email, passw, driver)
-        # housenumber,
-        # streetAddress1,
-        # streetAddress2,
-        # postalcode)
+                         email, driver)
+
         # if I use to take appointment one by one
         # if mail_otp == False:
         #     # white here a method to write csv for all those are False row
         #     continue
         #     # where to write the row for this one
-        if mail_otp == False:
-            reference_number = False
-            picked_date = False
-            data = [user_name, pass_word, reference_number, firstname, lastname, mobile, email, passport, centre,
-                    appointment_category, birthdate, passportexpiration, nationality, picked_date]
-            self.write_output(data)
-            driver.quit()
-        else:
-            self.wait60sec(driver)
-            self.email_otp_submission(mail_otp, driver)
+
+
+        # if mail_otp == False:
+        #     reference_number = False
+        #     picked_date = False
+        #     data = [user_name, pass_word, reference_number, firstname, lastname, mobile, email, passport, centre,
+        #             appointment_category, birthdate, passportexpiration, nationality, picked_date]
+        #     self.write_output(data)
+        #     driver.quit()
+        # else:
+        #     self.wait60sec(driver)
+        #     self.email_otp_submission(mail_otp, driver)
 
         # self.wait60sec(driver)
         # self.email_otp_submission(mail_otp, driver)
@@ -581,13 +563,12 @@ class Appointment():
             countrycode = line['countrycode'].strip()
             mobile = line['mobile'].strip()
             email = line['email'].strip()
-            passw = line['passw'].strip()
 
             # threads = []
             # starting here
             t = threading.Thread(target=self.from_csvreading_to_sent_token, args=(user_name, pass_word, centre, appointment_category, passport,
                                                birthdate, passportexpiration, nationality, firstname, lastname, gender, countrycode,
-                                               mobile, email, passw))
+                                               mobile, email))
             t.start()
             time.sleep(1)
             break;

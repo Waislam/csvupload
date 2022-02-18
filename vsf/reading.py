@@ -32,7 +32,6 @@ class ReadWrite:
                 countrycode = item['countrycode']
                 mobile = item['mobile']
                 email = item['email']
-                passw = item['passw']
 
 
                 #below things for without otp
@@ -54,8 +53,7 @@ class ReadWrite:
                                        'gender': gender,
                                        'countrycode': countrycode,
                                        'mobile': mobile,
-                                       'email': email,
-                                       'passw': passw})
+                                       'email': email})
 
                                        # below things are for without otp
                                        # 'housenumber': housenumber,
