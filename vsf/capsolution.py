@@ -1,3 +1,4 @@
+import os
 import random
 import time
 # for recaptcha solution
@@ -23,7 +24,7 @@ class CapSolution:
     def download_audio(self, src):
         '''method to download audio from google captcha and read that'''
         rq = requests.get(src)
-        filename = 'audio.mp3'
+        filename = 'vsf/audio.mp3'
         with open(filename, 'wb') as f:
             f.write(rq.content)
 
@@ -56,9 +57,9 @@ class CapSolution:
 
         # convert mp3 to wav file
 
-        audio = pydub.AudioSegment.from_mp3("audio.mp3")
-        audio.export("audio.wav", format="wav")
-        current_audio = speech_recognition.AudioFile("audio.wav")
+        audio = pydub.AudioSegment.from_mp3(os.path.join("vsf/audio.mp3"))
+        audio.export(os.path.join("vsf/audio.wav"), format="wav")
+        current_audio = speech_recognition.AudioFile(os.path.join("vsf/audio.wav"))
         recognizer = speech_recognition.Recognizer()
         with current_audio as source:
             audio = recognizer.record(source)

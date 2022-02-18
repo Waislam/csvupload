@@ -92,7 +92,29 @@ class Appointment():
         print('in first f '+ otp_int)
         return otp_int
 
+
+    def click_on_image(self, driver, header_text):
+        ''' this method supposed  to click on hcaptcha images'''
+        wrapper_list = driver.find_elements(By.XPATH, "//div[@class='task-image']")
+        print(wrapper_list)
+
+        for wrapper in wrapper_list:
+            img_url = wrapper.find_element(By.XPATH, ".//div[@class='image-wrapper']/div[@class='image']")  # .value_of_css_property('background'))
+            absolute_url = img_url.value_of_css_property('background').lstrip('url(&quot;').rstrip(';) 50% 50% / 123.333px 123.333px no-repeat;')
+            ls = absolute_url.lstrip('gba(0, 0, 0, 0) url("')
+            rs = ls.rstrip('") no-repeat scroll 50% 50% / 123.333px 123.333px padding-box border-b')
+            if header_text == 'bus':
+                if '==' in rs:
+                    wrapper.click()
+                    time.sleep(3)
+            else:
+                if '=' not in rs:
+                    wrapper.click()
+                    time.sleep(3)
+
+
     def hcapsolution(self, driver):
+        '''this is the method to solve hcaptcha'''
         # capsol = HcapSolution()
         # capsol.runhcap(driver)
         self.delay()
@@ -103,7 +125,36 @@ class Appointment():
         time.sleep(2)
         check_box = driver.find_element(By.XPATH, "//div[@id='checkbox']")
         check_box.click() # clicked on the check box of hcaptcha
-        time.sleep(60)
+        time.sleep(5)
+        # switch to iframe of hcaptcha image content(main content)
+        driver.switch_to.default_content()
+        iframe_image = driver.find_elements(By.XPATH, "//iframe[@title='Main content of the hCaptcha challenge']")[1]
+        driver.switch_to.frame(iframe_image) # switched to the captcha image content
+        driver.implicitly_wait(5)
+        self.delay()
+        header_text = driver.find_element(By.XPATH, "//div[@class='prompt-text']").text.strip().split(' ')[-1].strip()
+        print(header_text)
+        self.delay()
+        self.click_on_image(driver, header_text)
+
+        #value_of_css_property("background-image")
+        # bg_url = div.value_of_css_property('background-image')  # 'url("https://i.xxxx.com/img.jpg")'
+        # # strip the string to leave just the URL part
+        # bg_url = bg_url.lstrip('url("').rstrip('")')
+        # https://i.xxxx.com/img.jpg
+
+        time.sleep(3)
+        next_challenge = driver.find_element(By.XPATH, "//div[@title='Next Challenge']")
+        next_challenge.click()
+        driver.implicitly_wait(5)
+        self.delay()
+        self.click_on_image(driver, header_text)
+        driver.implicitly_wait(5)
+        self.delay()
+        verify_button = driver.find_element(By.XPATH, "//div[@title='Submit Answers']")
+        verify_button.click()
+        time.sleep(10)
+
 
 
 
@@ -113,16 +164,24 @@ class Appointment():
 
         # starting selection of Center and Appointment category
         self.delay()
+        time.sleep(2)
         center_selection = Select(driver.find_element(By.XPATH, "//select[@id='LocationId']"))
         center_selection.select_by_value(centre)
         self.wait60sec(driver)
         self.delay()
+        time.sleep(2)
         category_selection = Select(driver.find_element(By.XPATH, "//select[@id='VisaCategoryId']"))
         category_selection.select_by_value(appointment_category)
 
         #click on continue button
         driver.implicitly_wait(10)
         driver.find_element(By.XPATH, "//input[@id='btnContinue']").click() #this is the continue button in the first page
+        # now if field validation needed
+        try:
+            field_valid = driver.find_elements(By.XPATH, "//span[@class='field-validation-error']")[-1].text.strip()
+            driver.find_element(By.XPATH, "//input[@id='btnContinue']").click()  # this is the continue button in the first page
+        except:
+            print('no field validation error')
         self.delay()
         #next page loading
         # now click on Add Customer button
@@ -131,7 +190,17 @@ class Appointment():
         driver.implicitly_wait(3)
 
         # now it is time to solve hcaptcha
-        self.hcapsolution(driver)
+        while True:
+            driver.implicitly_wait(5)
+            self.delay()
+            try:
+                self.hcapsolution(driver)
+            except:
+                print('captcha solved')
+                break;
+
+        driver.switch_to.default_content()
+
 
     def addcustomer(self, passport,
                      # confirmpassport,
