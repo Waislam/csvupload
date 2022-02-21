@@ -1,7 +1,7 @@
 import random
 import threading
 from multiprocessing import Process
-
+import undetected_chromedriver.v2 as uc
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -50,16 +50,33 @@ class Appointment():
     #     "proxyType": "MANUAL",
     #
     # }
-    options = Options()
+
+
+    # options = Options()
+
+
     # ua = UserAgent()
     # userAgent = ua.random
-    # userAgent = 'user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36'
+    #userAgent = 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
     # options.add_argument(f'user-agent={userAgent}')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
+    # options.add_argument('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"')
+
+    # options.add_experimental_option("excludeSwitches", ["enable-automation"]) # one
+    # options.add_experimental_option('useAutomationExtension', False) # two
+    # options.add_argument('--disable-blink-features=AutomationControlled') #three  these three option is called "Removing Navigator.Webdriver Flag"
+    # options.add_argument('--disable-notifications') # one this is to stop showing notificationn like "Save password" (working)
+    # prefs = {"profile.default_content_setting_values.notifications": 2} # two
+    # options.add_experimental_option("prefs", prefs) #three above three lines of code ignoring the "Save password" popup from chrome (called browser notifictaion)
+    # options.add_argument('--no-sandbox')
+    # options.add_argument('--disable-dev-shm-usage')
+
+    # options.add_argument("user-data-dir=selenium") # this option must keep your current session cookies
+
+    options = uc.ChromeOptions()
+    # options.headless = False
 
     service_obj = Service(ChromeDriverManager().install())
-    # driver = None
+
     def __init__(self):
         # self.driver = webdriver.Chrome(service=self.service_obj)
         pass
@@ -152,9 +169,10 @@ class Appointment():
         self.delay()
         verify_button = driver.find_element(By.XPATH, "//div[@title='Submit Answers']")
         verify_button.click()
-        time.sleep(10)
+        time.sleep(5)
 
 
+        # Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36
 
 
     def primary_selection(self, centre, appointment_category, driver):
@@ -163,7 +181,11 @@ class Appointment():
 
         # starting selection of Center and Appointment category
         self.delay()
+        # here you will get a pop up to save pass if it is seems a browser with no detection
+        # driver.switch_to.alert.dismiss() # not working because that was not a alert button rather a popup
+        # driver.switch_to_alert().dismiss()
         time.sleep(2)
+
         center_selection = Select(driver.find_element(By.XPATH, "//select[@id='LocationId']"))
         center_selection.select_by_value(centre)
         self.wait60sec(driver)
@@ -478,19 +500,28 @@ class Appointment():
                                       mobile,
                                       email):
         '''this method initiated and quite the driver'''
-        driver = webdriver.Chrome(self.service_obj.path, options=self.options)
+        # driver = webdriver.Chrome(self.service_obj.path, options=self.options)
+        # driver.maximize_window()
+        driver = uc.Chrome(options=self.options)
+        # driver.maximize_window()
+        # driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})") #this is to disable "Navigator.Webdriver Flag"
 
             # self.driver.get('https://row1.vfsglobal.com/GlobalAppointment/Home/Index')
         try:
             self.wait60sec(driver)
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
             # driver.add_cookie({"ASP.NET_SessionId": "41pyiclvcsdz40dvsi4s5pmr", "_culture": "en-US", "_Role": "Individual", })
-            # driver.get_cookies()
+            self.wait60sec(driver)
             self.login(user_name, pass_word, driver)
+            # driver.get_cookies()
+            # driver.add_cookie({'cookie': my_cookie})
         except:
             self.wait60sec(driver)
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
+            self.wait60sec(driver)
             self.login(user_name, pass_word, driver)
+            # driver.get_cookies()
+            # driver.add_cookie({'cookie': my_cookie})
 
         self.wait60sec(driver)
         self.make_schedule(centre, appointment_category, driver)
