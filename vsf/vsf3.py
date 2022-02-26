@@ -1,7 +1,8 @@
 import random
 import threading
 from multiprocessing import Process
-import undetected_chromedriver.v2 as uc
+# import undetected_chromedriver.v2 as uc
+import undetected_chromedriver as uc
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -35,6 +36,9 @@ from .output import write_result
 # for solution of hcaptcha
 from .hcapsol import HcapSolution
 
+# gcapsol with 2captch
+from .test import gcapresponse
+
 
 
 class Appointment():
@@ -52,30 +56,27 @@ class Appointment():
     # }
 
 
-    # options = Options()
 
+
+
+    # options = uc.ChromeOptions()
+    service_obj = Service(ChromeDriverManager().install())
+    options = Options()
 
     # ua = UserAgent()
     # userAgent = ua.random
-    #userAgent = 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
+    # userAgent = 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36'
     # options.add_argument(f'user-agent={userAgent}')
     # options.add_argument('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"')
 
-    # options.add_experimental_option("excludeSwitches", ["enable-automation"]) # one
-    # options.add_experimental_option('useAutomationExtension', False) # two
-    # options.add_argument('--disable-blink-features=AutomationControlled') #three  these three option is called "Removing Navigator.Webdriver Flag"
-    # options.add_argument('--disable-notifications') # one this is to stop showing notificationn like "Save password" (working)
-    # prefs = {"profile.default_content_setting_values.notifications": 2} # two
-    # options.add_experimental_option("prefs", prefs) #three above three lines of code ignoring the "Save password" popup from chrome (called browser notifictaion)
-    # options.add_argument('--no-sandbox')
-    # options.add_argument('--disable-dev-shm-usage')
-
-    # options.add_argument("user-data-dir=selenium") # this option must keep your current session cookies
-
-    options = uc.ChromeOptions()
-    # options.headless = False
-
-    service_obj = Service(ChromeDriverManager().install())
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])  # one
+    options.add_experimental_option('useAutomationExtension', False)  # two
+    options.add_argument('--disable-blink-features=AutomationControlled')  # three  these three option is called "Removing Navigator.Webdriver Flag"
+    options.add_argument('--disable-notifications')  # one this is to stop showing notificationn like "Save password" (working)
+    prefs = {"profile.default_content_setting_values.notifications": 2}  # two
+    options.add_experimental_option("prefs",prefs)  # three above three lines of code ignoring the "Save password" popup from chrome (called browser notifictaion)
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
 
     def __init__(self):
         # self.driver = webdriver.Chrome(service=self.service_obj)
@@ -98,9 +99,12 @@ class Appointment():
         self.user_list = read.data_list
         read.read_data()
 
-    def solution_cap(self, driver):
-        capsul = CapSolution()
-        capsul.capthasolution(driver)
+    # def solution_cap(self, driver):
+    #     capsul = CapSolution()
+    #     capsul.capthasolution(driver)
+    def gcapsol(self):
+        result = gcapresponse()
+        return result
 
     # def gmail_otp(self, email, passw):
     #     '''this method supposed to fetch otp from gmail'''
@@ -119,7 +123,7 @@ class Appointment():
             absolute_url = img_url.value_of_css_property('background').lstrip('url(&quot;').rstrip(';) 50% 50% / 123.333px 123.333px no-repeat;')
             ls = absolute_url.lstrip('gba(0, 0, 0, 0) url("')
             rs = ls.rstrip('") no-repeat scroll 50% 50% / 123.333px 123.333px padding-box border-b')
-            if header_text == 'bus':
+            if header_text == 'bus' or header_text == 'river':
                 if '==' in rs:
                     wrapper.click()
                     time.sleep(3)
@@ -196,9 +200,11 @@ class Appointment():
 
         #click on continue button
         driver.implicitly_wait(10)
+        time.sleep(3)
         driver.find_element(By.XPATH, "//input[@id='btnContinue']").click() #this is the continue button in the first page
         # now if field validation needed
         try:
+            time.sleep(2)
             field_valid = driver.find_elements(By.XPATH, "//span[@class='field-validation-error']")[-1].text.strip()
             driver.find_element(By.XPATH, "//input[@id='btnContinue']").click()  # this is the continue button in the first page
         except:
@@ -335,7 +341,7 @@ class Appointment():
     #     driver.find_element(By.XPATH, "//input[@value='Verify OTP and Continue']").click()
 
 
-    def pick_date(self, driver):
+    def pick_date(self, month_1, month_2, month_3, driver):
         self.picked_date = ''
         self.delay()
         # take the reference number
@@ -347,51 +353,42 @@ class Appointment():
         driver.find_element(By.XPATH, "//input[@id='btnContinueService']").click() #clicked on continue button
         # go further
         driver.implicitly_wait(5)
-        month = driver.find_element(By.XPATH, "//input[@id='EarliestAllotedMonth']")
-        driver.execute_script("arguments[0].setAttribute('value', '6')", month)
-        time.sleep(1)
-        driver.refresh()
-        driver.implicitly_wait(5)
+        time.sleep(2)
+        # month = driver.find_element(By.XPATH, "//input[@id='EarliestAllotedMonth']")
+        # driver.execute_script("arguments[0].setAttribute('value', '3')", month)
+
+        # month value from csv file
+        # month_1 = 'June 2022'
+        # month_2 = 'July 2022'
+        # month_3 = 'August 2022'
+        month_4 = 'September 2022'
+
+
+
         # now time to select date
         # date selection
+        # day_number = available_date_list.find_element(By.XPATH, "/div/div[@class='fc-day-number']").text.strip()
         self.delay()
-        try:
-            while True:
-                try:
-                    try:
-                        # valo kore observe korte hobe kon page bar bar reload hosse
-                        available_date_list = driver.find_element(By.XPATH, "//td[@style='background-color: rgb(188, 237, 145); cursor: pointer;']")[0]
-                        available_date_list.click()
-                        day_number = available_date_list.find_element(By.XPATH, "/div/div[@class='fc-day-number']").text.strip()
-                        break;
-                    except:
-                        # it will click on the next month page and will try
-                        # click on next button add the action below/ didn't add yet
-                        next_month = driver.find_element(By.XPATH, "//input[@id='EarliestAllotedMonth']")
-                        driver.execute_script("arguments[0].setAttribute('value', '7')", next_month)
-                        driver.refresh()
-                        available_date_list = driver.find_elements(By.XPATH,"//td[@style='background-color: rgb(188, 237, 145); cursor: pointer;']")[0]
-                        available_date_list.click()
-                        day_number = available_date_list.find_element(By.XPATH, "/div/div[@class='fc-day-number']").text.strip()
-                        break;
-                except:
-                    time.sleep(60)
-                    driver.refresh()
-        except:
-            day_number = 'Null'
-            self.picked_date += day_number
-            return self.picked_date
 
 
-        self.picked_date += day_number
-        #//td[@style='background-color: rgb(188, 237, 145); cursor: pointer;']/div/div[@class='fc-day-number']
+
+        month_value = driver.find_element(By.XPATH, "//span[@class='fc-header-title']").text.strip()
+        if month_value == month_1 or month_value == month_2 or month_value == month_3 or month_value == month_4:
+            available_date_list = driver.find_elements(By.XPATH, "//td[@style='background-color: rgb(188, 237, 145); cursor: pointer;']")[0]
+            available_date_list.click()
+        else:
+            print('No matching for month')
+            time.sleep(1000)
+            # driver need to reload from here again
+
+
+
 
         # click on time schedule
-        time.sleep(1)
-        schedule_list = driver.find_elements(By.XPATH, "//div[@id='TimeBandsDiv']/table/tbody/tr")[1:]
-        mytime = schedule_list[0]
-        mytime.click()
-        time.sleep(1)
+        time.sleep(2)
+        schedule_list = driver.find_elements(By.XPATH, "//div[@id='TimeBandsDiv']/table/tbody/tr/td")[0]
+        schedule_list.click()
+        time.sleep(2)
 
 
         #click on confirm button
@@ -412,16 +409,31 @@ class Appointment():
         driver.find_element(By.XPATH, "//input[@id='IAgree']").click()
 
         # click on confirm and pay button to continue
-        driver.find_element(By.XPATH, "//input[@id='btnConfirm']")
+        driver.find_element(By.XPATH, "//input[@id='btnConfirm']").click()
         # click on alert prompt
         self.wait60sec(driver)
         driver.switch_to.alert.accept()
+        time.sleep(2)
 
 
-    def paynow(self, cardnumber, expirationmonth, expirationyear, cvvnumber, driver):
+    def paynow(self, zip_code, street, city, state, country, cardholder, cardnumber, expirationmonth, expirationyear, cvvnumber, driver):
         self.delay()
         driver.switch_to.default_content()
+        # fill street zip code
+        driver.find_element(By.XPATH, "//input[@id='billing_zip']").send_keys(zip_code)
+        # fill street address
+        driver.find_element(By.XPATH, "//textarea[@id='billing_address1']").send_keys(street)
+        # fill street city
+        driver.find_element(By.XPATH, "//input[@id='billingcity']").send_keys(city)
+        # fill street state
+        driver.find_element(By.XPATH, "//input[@id='billingstate']").send_keys(state)
+        # select country
+        billing_country = Select(driver.find_element(By.XPATH, "//select[@id='billingcountry']"))
+        billing_country.select_by_value(country)
 
+        # input card holder Name
+        card_holder_name = driver.find_element(By.XPATH, "//input[@id='nameOnCard']")
+        card_holder_name.send_keys(cardholder)
         # input card number
         card_number = driver.find_element(By.XPATH, "//input[@id='creditcard_cardNumber']")
         card_number.send_keys(cardnumber)
@@ -438,21 +450,27 @@ class Appointment():
         driver.find_element(By.XPATH, "//input[@id='CVV']").send_keys(cvvnumber)
 
         # here we need to add zip code, address and some more field to forward /  continue payment action
-        # Here need to add I agree check box to check
-        # then the pay now
-        driver.find_element(By.XPATH, "//button[@id='paySubmit']").click()
+        # Here need to add I agree check box to check (there is no check box like this.. )
+        # Now it is time to sleep for 59 minutes
+        time.sleep(3540)
+
+        # driver.find_element(By.XPATH, "//button[@id='paySubmit']").click()
 
 
 
     def login(self, user_name, pass_word, driver):
         '''This method is suppose to solve login and login captcha problem'''
         driver.implicitly_wait(2)
+        time.sleep(2)
         email = driver.find_element(By.XPATH, "//input[@id='EmailId']")
         print(user_name)
         # email.send_keys('waislam67@gmail.com')
+        time.sleep(2)
         email.send_keys(user_name)
+        time.sleep(2)
         password = driver.find_element(By.XPATH, "//input[@id='Password']")
         # password.send_keys('H!PBb!@B4CxjQN5')
+        time.sleep(2)
         password.send_keys(pass_word)
 
         #form data mission country name
@@ -473,11 +491,28 @@ class Appointment():
         # self.default_cap_solution(image_src)
 
         #google captcha
-        self.solution_cap(driver)
+        time.sleep(2)
+        textarea = driver.find_element(By.XPATH, "//textarea[@id='g-recaptcha-response']")
+        verify_key = driver.execute_script("arguments[0].style.display = 'inline';", textarea)
+        time.sleep(10)
+        capsol_key = self.gcapsol()
+        textarea.send_keys(capsol_key)
+
+        time.sleep(2)
+        # now click on submit button
+        submit_button = driver.find_element(By.XPATH, "//div[@class='frm-button']/input")
+        driver.execute_script("arguments[0].style.position = 'absolute';", submit_button)
+        time.sleep(2)
+        submit_button.click()
+        # driver.find_element(By.XPATH, "//div[@class='frm-button']/input").click()
+
+        # self.solution_cap(driver) # this one is for solving gcapcha done by developer
+
 
 
     def make_schedule(self, centre, appointment_category, driver):
         '''this method is the parent of primary selection'''
+        time.sleep(3)
         driver.find_element(By.XPATH, "//ul[@class='leftNav-ul']/descendant::li[1]/a").click() #schedule an appointment
         driver.implicitly_wait(2)
         time.sleep(3)
@@ -498,13 +533,14 @@ class Appointment():
                                       gender,
                                       countrycode,
                                       mobile,
-                                      email):
+                                      email, month_1, month_2, month_3,
+                                      zip_code, street, city, state, country, cardholder, cardnumber, expirationmonth, expirationyear, cvvnumber):
         '''this method initiated and quite the driver'''
         # driver = webdriver.Chrome(self.service_obj.path, options=self.options)
         # driver.maximize_window()
-        driver = uc.Chrome(options=self.options)
-        # driver.maximize_window()
-        # driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})") #this is to disable "Navigator.Webdriver Flag"
+        # driver = uc.Chrome(options=self.options)
+        driver = uc.Chrome()
+        driver.maximize_window()
 
             # self.driver.get('https://row1.vfsglobal.com/GlobalAppointment/Home/Index')
         try:
@@ -512,6 +548,7 @@ class Appointment():
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
             # driver.add_cookie({"ASP.NET_SessionId": "41pyiclvcsdz40dvsi4s5pmr", "_culture": "en-US", "_Role": "Individual", })
             self.wait60sec(driver)
+            driver.implicitly_wait(5)
             self.login(user_name, pass_word, driver)
             # driver.get_cookies()
             # driver.add_cookie({'cookie': my_cookie})
@@ -519,6 +556,7 @@ class Appointment():
             self.wait60sec(driver)
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
             self.wait60sec(driver)
+            driver.implicitly_wait(5)
             self.login(user_name, pass_word, driver)
             # driver.get_cookies()
             # driver.add_cookie({'cookie': my_cookie})
@@ -563,11 +601,11 @@ class Appointment():
 
         # continue to the next step ( later will split this method to another big method)
         self.wait60sec(driver)
-        self.pick_date(driver)
+        self.pick_date(month_1, month_2, month_3, driver)
         reference_number = self.reference_number
         picked_date = self.picked_date
         data =[user_name, pass_word, reference_number,  firstname, lastname, mobile, email, passport, centre, appointment_category, birthdate, passportexpiration, nationality, picked_date ]
-        # self.paynow(cardnumber, expirationmonth, expirationyear, cvvnumber, driver)
+        self.paynow(zip_code, street, city, state, country, cardholder, cardnumber, expirationmonth, expirationyear, cvvnumber, driver)
         # will write the result
         self.write_output(data)
         driver.quit()
@@ -594,15 +632,33 @@ class Appointment():
             countrycode = line['countrycode'].strip()
             mobile = line['mobile'].strip()
             email = line['email'].strip()
+            #for pick date function
+            month_1 = line['month1'].strip()
+            month_2 = line['month2'].strip()
+            month_3 = line['month3'].strip()
+            # for paynow
+            zip_code = line['zipcode'].strip()
+            street = line['street'].strip()
+            city = line['city'].strip()
+            state = line['state'].strip()
+            country = line['country'].strip()
+            cardholder = line['cardholder'].strip()
+            cardnumber = line['cardnumber'].strip()
+            expirationmonth = line['expirationmonth'].strip()
+            expirationyear = line['expirationyear'].strip()
+            cvvnumber = line['cvvnumber'].strip()
+
 
             # threads = []
             # starting here
             t = threading.Thread(target=self.from_csvreading_to_sent_token, args=(user_name, pass_word, centre, appointment_category, passport,
                                                birthdate, passportexpiration, nationality, firstname, lastname, gender, countrycode,
-                                               mobile, email))
+                                               mobile, email, month_1, month_2, month_3,
+                                                zip_code, street, city, state, country, cardholder, cardnumber, expirationmonth, expirationyear, cvvnumber))
+            time.sleep(3)
             t.start()
-            time.sleep(1)
-            break;
+            # time.sleep(3)
+            # break;
 
 
 

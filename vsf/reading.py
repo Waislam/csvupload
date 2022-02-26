@@ -32,13 +32,20 @@ class ReadWrite:
                 countrycode = item['countrycode']
                 mobile = item['mobile']
                 email = item['email']
+                month1 = item['month1']
+                month2 = item['month2']
+                month3 = item['month3']
+                zipcode = item['zipcode']
+                street = item['street']
+                city = item['city']
+                state = item['state']
+                country = item['country']
+                cardholder = item['cardholder']
+                cardnumber = item['cardnumber']
+                expirationmonth = item['expirationmonth']
+                expirationyear = item['expirationyear']
+                cvvnumber = item['cvvnumber']
 
-
-                #below things for without otp
-                # housenumber = item['housenumber']
-                # streetAddress1 = item['streetAddress1']
-                # streetAddress2 = item['streetAddress2']
-                # postalcode = item['postalcode']
 
                 self.data_list.append({'User Name': user_name,
                                        'Password': pass_word,
@@ -53,7 +60,20 @@ class ReadWrite:
                                        'gender': gender,
                                        'countrycode': countrycode,
                                        'mobile': mobile,
-                                       'email': email})
+                                       'email': email,
+                                       'month1': month1,
+                                       'month2': month2,
+                                       'month3': month3,
+                                       'zipcode': zipcode,
+                                       'street': street,
+                                       'city': city,
+                                       'state': state,
+                                       'country': country,
+                                       'cardholder': cardholder,
+                                       'cardnumber': cardnumber,
+                                       'expirationmonth': expirationmonth,
+                                       'expirationyear': expirationyear,
+                                       'cvvnumber': cvvnumber})
 
                                        # below things are for without otp
                                        # 'housenumber': housenumber,

@@ -1,14 +1,24 @@
-import requests
+import sys
+import os
 
-html = "https://imgs.hcaptcha.com/22b5qlQ9ggIwoGkLYFHnpUATmzg7XSUDqH890WJ2reGRTNVqCARHEMaCPpSqySUpUd2h4TQzzhUYbJCRTcaM+xDaXoP2ijn2w+ENDeiCvDP6ucNWmHsbXbDqIXAeMFN6W+ttg4OcOBWjz1vlY59bhSAzPwvBCGMcxXOpWagqZWgm1Y5jG4p99JaSuaHQhJRp90hnTgQc2euza9MCOQgYutgD&quot"
-html1 = "https://imgs.hcaptcha.com/e8Ej56GfR4HvTCPLhbxOi6YBeQ1KPOxaeQ8e8FClXU196Ber8cA5ui3PXdSD4oZatuAWSsjyoSNNpMVxjklvV706LMo6GyzAlTZk2jco3fhkntuyHHd1+xkT8aPXpgWCU6iizNPH+YOzn1FRn+eK3c4ihxlqdRuypHr1r6yLfyIJJ7jC52miSUUtVyyoglrT9ImHm8ye4v3RE69KxU4=Td1PZBM2McbHUYDT"
-html2 = "https://imgs.hcaptcha.com/IJSFsChXAspw3UbvGRr3sN6tzUixrtzMSH81xlu+NcvPU/7pHl9NV1m6yCU1X53GjYvZVgPM9UYQSmmLiKx4M8nNdkmEEdKIubX1jhEwbh40E+FVs3ACaEWplQSiLVHTl/EFlh/cmm71KFo4cIVZWL35oNh6KWlJtEcVCgmavgEm1EMXA39FBR9DMIg6tn/da65S0g==pS0IVZR6+cRA0Qsk"
-head = 'boat'
-l = [html, html1, html2]
-for item in l:
-    if head == 'bus':
-        if '==' in item:
-            print(item)
+sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+from twocaptcha import TwoCaptcha
+
+api_key = os.getenv('APIKEY_2CAPTCHA', '4bf17e2c6736e7f978960b424720a607')
+
+solver = TwoCaptcha(api_key)
+
+def gcapresponse():
+
+    try:
+        result = solver.solve_captcha(
+            '6Ld-Kg8UAAAAAK6U2Ur94LX8-Agew_jk1pQ3meJ1',
+            'https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
+
+    except Exception as e:
+        sys.exit(e)
+
     else:
-        if '=' not in item:
-            print(item)
+        # sys.exit('solved: ' + str(result))
+        return result
