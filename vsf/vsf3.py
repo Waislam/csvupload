@@ -77,6 +77,8 @@ class Appointment():
     options.add_experimental_option("prefs",prefs)  # three above three lines of code ignoring the "Save password" popup from chrome (called browser notifictaion)
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
+    # options.add_argument("--user-data-dir=C:\\Users\\City\\AppData\\Local\\Google\\Chrome\\User Data") # this will open browser from your default browser
+
 
     def __init__(self):
         # self.driver = webdriver.Chrome(service=self.service_obj)
@@ -99,12 +101,12 @@ class Appointment():
         self.user_list = read.data_list
         read.read_data()
 
-    # def solution_cap(self, driver):
-    #     capsul = CapSolution()
-    #     capsul.capthasolution(driver)
-    def gcapsol(self):
-        result = gcapresponse()
-        return result
+    def solution_cap(self, driver):
+        capsul = CapSolution()
+        capsul.capthasolution(driver)
+    # def gcapsol(self):
+    #     result = gcapresponse()
+    #     return result
 
     # def gmail_otp(self, email, passw):
     #     '''this method supposed to fetch otp from gmail'''
@@ -378,8 +380,9 @@ class Appointment():
             available_date_list.click()
         else:
             print('No matching for month')
-            time.sleep(1000)
+            time.sleep(10)
             # driver need to reload from here again
+            # will write origin as False status
 
 
 
@@ -404,7 +407,8 @@ class Appointment():
         time.sleep(5)
         self.delay()
         driver.switch_to.default_content()
-        driver.find_element(By.XPATH, "//input[@id='ReachVFS']").click()
+        driver.implicitly_wait(2)
+        driver.find_element(By.XPATH, "//input[@id='ReachVFS']").click() # yes check
         #select accept check box
         driver.find_element(By.XPATH, "//input[@id='IAgree']").click()
 
@@ -413,7 +417,7 @@ class Appointment():
         # click on alert prompt
         self.wait60sec(driver)
         driver.switch_to.alert.accept()
-        time.sleep(2)
+        time.sleep(60)
 
 
     def paynow(self, zip_code, street, city, state, country, cardholder, cardnumber, expirationmonth, expirationyear, cvvnumber, driver):
@@ -433,9 +437,11 @@ class Appointment():
 
         # input card holder Name
         card_holder_name = driver.find_element(By.XPATH, "//input[@id='nameOnCard']")
+        card_holder_name.clear()
         card_holder_name.send_keys(cardholder)
         # input card number
         card_number = driver.find_element(By.XPATH, "//input[@id='creditcard_cardNumber']")
+        card_number.clear()
         card_number.send_keys(cardnumber)
 
         # select card expiration
@@ -491,22 +497,22 @@ class Appointment():
         # self.default_cap_solution(image_src)
 
         #google captcha
-        time.sleep(2)
-        textarea = driver.find_element(By.XPATH, "//textarea[@id='g-recaptcha-response']")
-        verify_key = driver.execute_script("arguments[0].style.display = 'inline';", textarea)
-        time.sleep(10)
-        capsol_key = self.gcapsol()
-        textarea.send_keys(capsol_key)
-
-        time.sleep(2)
-        # now click on submit button
-        submit_button = driver.find_element(By.XPATH, "//div[@class='frm-button']/input")
-        driver.execute_script("arguments[0].style.position = 'absolute';", submit_button)
-        time.sleep(2)
-        submit_button.click()
+        # time.sleep(2)
+        # textarea = driver.find_element(By.XPATH, "//textarea[@id='g-recaptcha-response']")
+        # verify_key = driver.execute_script("arguments[0].style.display = 'inline';", textarea)
+        # time.sleep(10)
+        # capsol_key = self.gcapsol()
+        # textarea.send_keys(capsol_key)
+        #
+        # time.sleep(2)
+        # # now click on submit button
+        # submit_button = driver.find_element(By.XPATH, "//div[@class='frm-button']/input")
+        # driver.execute_script("arguments[0].style.position = 'absolute';", submit_button)
+        # time.sleep(2)
+        # submit_button.click()
         # driver.find_element(By.XPATH, "//div[@class='frm-button']/input").click()
 
-        # self.solution_cap(driver) # this one is for solving gcapcha done by developer
+        self.solution_cap(driver) # this one is for solving gcapcha done by developer
 
 
 
@@ -543,6 +549,7 @@ class Appointment():
         driver.maximize_window()
 
             # self.driver.get('https://row1.vfsglobal.com/GlobalAppointment/Home/Index')
+
         try:
             self.wait60sec(driver)
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
@@ -551,7 +558,10 @@ class Appointment():
             driver.implicitly_wait(5)
             self.login(user_name, pass_word, driver)
             # driver.get_cookies()
+            # driver.session_id
+            # driver.execute_script('browserstack_executor: {"action": "getSessionDetails"}')
             # driver.add_cookie({'cookie': my_cookie})
+
         except:
             self.wait60sec(driver)
             driver.get('https://row1.vfsglobal.com/GlobalAppointment/Account/RegisteredLogin?q=shSA0YnE4pLF9Xzwon/x/LOSRShyD1pxcML5QC8esmWZOlCfzkBP8joxvSe0zuqEDa7b66mSROQzF6E9izpGMg==')
@@ -559,7 +569,10 @@ class Appointment():
             driver.implicitly_wait(5)
             self.login(user_name, pass_word, driver)
             # driver.get_cookies()
+            # driver.session_id
+            # driver.execute_script('browserstack_executor: {"action": "getSessionDetails"}')
             # driver.add_cookie({'cookie': my_cookie})
+
 
         self.wait60sec(driver)
         self.make_schedule(centre, appointment_category, driver)
@@ -655,10 +668,13 @@ class Appointment():
                                                birthdate, passportexpiration, nationality, firstname, lastname, gender, countrycode,
                                                mobile, email, month_1, month_2, month_3,
                                                 zip_code, street, city, state, country, cardholder, cardnumber, expirationmonth, expirationyear, cvvnumber))
-            time.sleep(3)
-            t.start()
             # time.sleep(3)
+            t.start()
+            time.sleep(5)
+            threads.append(t)
             # break;
+        for t in threads:
+            t.join()
 
 
 

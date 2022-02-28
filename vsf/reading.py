@@ -47,6 +47,7 @@ class ReadWrite:
                 cvvnumber = item['cvvnumber']
 
 
+
                 self.data_list.append({'User Name': user_name,
                                        'Password': pass_word,
                                        'Centre': centre,
@@ -75,10 +76,8 @@ class ReadWrite:
                                        'expirationyear': expirationyear,
                                        'cvvnumber': cvvnumber})
 
-                                       # below things are for without otp
-                                       # 'housenumber': housenumber,
-                                       # 'streetAddress1': streetAddress1,
-                                       # 'streetAddress2': streetAddress2,
-                                       # 'postalcode': postalcode})
 
 
+# if __name__ == "__main__":
+#     bot = ReadWrite()
+#     bot.read_data()
