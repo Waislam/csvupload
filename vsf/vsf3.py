@@ -31,7 +31,7 @@ from .capsolution import CapSolution
 # import csv
 # inputfile = 'vsfinput.csv' # all these things goes to external file
 from .reading import ReadWrite #to read inputed file
-from .output import write_result
+from .output import write_result, write_origin
 
 # for solution of hcaptcha
 from .hcapsol import HcapSolution
@@ -96,6 +96,11 @@ class Appointment():
         output = write_result(data)
         return output
 
+    def update_orgin(self):
+        data = self.user_list
+        write_origin(data)
+
+
     def read_csv(self):
         read = ReadWrite()
         self.user_list = read.data_list
@@ -104,6 +109,8 @@ class Appointment():
     def solution_cap(self, driver):
         capsul = CapSolution()
         capsul.capthasolution(driver)
+
+    
     # def gcapsol(self):
     #     result = gcapresponse()
     #     return result
@@ -630,6 +637,10 @@ class Appointment():
         self.read_csv()
         threads = []
         for line in self.user_list:
+            status = line["Status"]
+            if status == '1':
+                print("finished...")
+                continue
             user_name = line['User Name'].strip()
             pass_word = line['Password'].strip()
             centre = line['Centre'].strip()
@@ -664,17 +675,16 @@ class Appointment():
 
             # threads = []
             # starting here
-            t = threading.Thread(target=self.from_csvreading_to_sent_token, args=(user_name, pass_word, centre, appointment_category, passport,
-                                               birthdate, passportexpiration, nationality, firstname, lastname, gender, countrycode,
-                                               mobile, email, month_1, month_2, month_3,
-                                                zip_code, street, city, state, country, cardholder, cardnumber, expirationmonth, expirationyear, cvvnumber))
-            # time.sleep(3)
-            t.start()
-            time.sleep(5)
-            threads.append(t)
-            # break;
-        for t in threads:
-            t.join()
+            # t = threading.Thread(target=self.from_csvreading_to_sent_token, args=(user_name, pass_word, centre, appointment_category, passport,
+            #                                 birthdate, passportexpiration, nationality, firstname, lastname, gender, countrycode,
+            #                                 mobile, email, month_1, month_2, month_3,
+            #                                     zip_code, street, city, state, country, cardholder, cardnumber, expirationmonth, expirationyear, cvvnumber))
+            # # time.sleep(3)
+            # t.start()
+            # time.sleep(5)
+            line["Status"] = 1
+        self.update_orgin()
+                
 
 
 

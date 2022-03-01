@@ -45,6 +45,7 @@ class ReadWrite:
                 expirationmonth = item['expirationmonth']
                 expirationyear = item['expirationyear']
                 cvvnumber = item['cvvnumber']
+                status = item['Status']
 
 
 
@@ -74,7 +75,9 @@ class ReadWrite:
                                        'cardnumber': cardnumber,
                                        'expirationmonth': expirationmonth,
                                        'expirationyear': expirationyear,
-                                       'cvvnumber': cvvnumber})
+                                       'cvvnumber': cvvnumber,
+                                       'Status': status
+                                       })
 
 
 
